@@ -1,0 +1,45 @@
+{
+  "name": "vitepay/wechat",
+  "description": "vitepay的wechat支付网关。",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "thinkphp 6",
+    "支付",
+    "pay",
+    "vitepay",
+    "merchant",
+    "wechat pay",
+    "微信支付"
+  ],
+  "authors": [
+    {
+      "name": "liuwave",
+      "email": "liuwave@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "topthink/framework": "^6.0",
+    "symfony/options-resolver": "^3.3",
+    "php-http/guzzle6-adapter": "^2.0",
+    "nesbot/carbon": "^2.28",
+    "php-http/message": "^1.9",
+    "vitepay/core": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "vitepay\\wechat\\": "src/"
+    },
+    "files": [
+      "src/common.php"
+    ]
+  },
+  "extra": {
+    "think": {
+      "config": {
+        "vitepay_wechat": "src/config.php"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+<?php
+
+namespace vitepay\wechat\request;
+
+use think\helper\Str;
+use vitepay\core\interfaces\Refundable;
+
+class RefundRequest extends Request
+{
+    protected $uri = 'secapi/pay/refund';
+
+    public function __invoke(Refundable $refund)
+    {
+        $this->params = array_filter([
+            'appid'           => $this->gateway->getOption('app_id'),
+            'mch_id'          => $this->gateway->getOption('mch_id'),
+            'device_info'     => $refund->getExtra('device_info'),
+            'nonce_str'       => Str::random(),
+            'sign_type'       => 'MD5',
+            'out_trade_no'    => $refund->getCharge()->getTradeNo(),
+            'out_refund_no'   => $refund->getRefundNo(),
+            'total_fee'       => $refund->getCharge()->getAmount(),
+            'refund_fee'      => $refund->getAmount(),
+            'refund_fee_type' => $refund->getExtra('refund_fee_type'),
+            'refund_account'  => $refund->getExtra('refund_account'),
+            'op_user_id'      => $refund->getExtra('op_user_id') ?: $this->gateway->getOption('mch_id'),
+        ]);
+    }
+}
