@@ -5,7 +5,7 @@ vitepay的微信支付网关。
 
 ## 安装
 
-    composer require vitepay/core vitepay/wechat
+    composer require vitepay/wechat
     
 
 
