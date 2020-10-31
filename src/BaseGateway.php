@@ -141,7 +141,8 @@ class BaseGateway extends Gateway
               $result = $this->sendRequest($request);
               
               return $result[ 'sandbox_signkey' ];
-          }
+          },
+          86400
         );
     }
     
