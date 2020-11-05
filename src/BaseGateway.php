@@ -1,4 +1,5 @@
 <?php
+
 namespace vitepay\wechat;
 
 use Carbon\Carbon;
@@ -9,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use think\Cache;
+use think\facade\Log;
 use think\Request;
 use vitepay\core\entity\PurchaseResponse;
 use vitepay\core\Gateway;
@@ -19,6 +21,7 @@ use vitepay\wechat\request\GetSignKeyRequest;
 use vitepay\wechat\request\OrderQueryRequest;
 use vitepay\wechat\request\RefundQueryRequest;
 use vitepay\wechat\request\RefundRequest;
+
 use function vitepay\wechat\array2xml;
 use function vitepay\wechat\convert_key;
 use function vitepay\wechat\xml2array;
@@ -45,8 +48,6 @@ class BaseGateway extends Gateway
      *
      */
     const TYPE_MWEB = 'MWEB';
-    
-
     
     /** @var Cache */
     protected $cache;
@@ -153,12 +154,22 @@ class BaseGateway extends Gateway
      */
     public function generateSign(array $params) : string
     {
-        unset($params[ 'sign' ]);
+        if ($this->isLog()) {
+            Log::info('wechatSignLog'.json_encode(['params' => $params],JSON_UNESCAPED_UNICODE || JSON_UNESCAPED_SLASHES));
+        }
+        if (isset($params[ 'sign' ])) {
+            unset($params[ 'sign' ]);
+        }
+        
         ksort($params);
         $query = urldecode(http_build_query($params));
         $query .= "&key={$this->getOption('key')}";
+        $md5   = strtoupper(md5($query));
+        if ($this->isLog()) {
+            Log::info('wechatSign::'.json_encode(['query' => $query, $md5],JSON_UNESCAPED_UNICODE || JSON_UNESCAPED_SLASHES));
+        }
         
-        return strtoupper(md5($query));
+        return $md5;
     }
     
     /**
